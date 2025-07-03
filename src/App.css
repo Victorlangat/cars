@@ -1,38 +1,1476 @@
-.App {
-  text-align: center;
+/* src/App.css */
+
+/* Modern Dark Theme with Adjusted Layout */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --dark-bg: #1a1a1a;
+  --card-bg: #242424;
+  --surface: #2d2d2d;
+  --text-light: #f5f5f5;
+  --text-gray: #b0b0b0;
+  --accent-orange: #e94f3e;
+  --accent-orange-light: #ff6b5b;
+  --accent-gold: #ffb347;
+  --border: #3a3a3a;
+  --sidebar-width: 280px;
+  --content-padding: 2rem 1.5rem 2rem 1rem; /* Reduced left padding */
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+body {
+  background: var(--dark-bg);
+  color: var(--text-light);
+  line-height: 1.6;
 }
 
-.App-header {
-  background-color: #282c34;
+/* App Layout */
+.app-container {
+  display: flex;
   min-height: 100vh;
+}
+
+/* Sidebar Styles */
+.sidebar {
+  width: var(--sidebar-width);
+  background: var(--surface);
+  color: var(--text-light);
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem 0;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.3);
+  position: sticky;
+  top: 0;
+  left: 0;
+  height: 100vh; /* Make sidebar take full height */
+  z-index: 1000;
+}
+
+.sidebar-header {
+  text-align: center;
+  margin-bottom: 2rem;
+  padding: 0 1.5rem;
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 0.5rem;
+}
+
+.logo-icon {
+  font-size: 2rem;
+  color: var(--accent-orange);
+}
+
+.sidebar-header h2 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--text-light);
+}
+
+.sidebar-header p {
+  font-size: 0.85rem;
+  color: var(--text-gray);
+}
+
+.sidebar-menu {
+  flex-grow: 1;
+  padding: 0 1.5rem;
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.2rem;
+  margin-bottom: 0.5rem;
+  color: var(--text-gray);
+  text-decoration: none;
+  border-radius: 8px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  font-size: 1rem;
+  font-weight: 500;
+  width: 100%; /* Ensure button takes full width */
+  text-align: left; /* Align text left for buttons */
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.menu-item:hover,
+.menu-item.active {
+  background-color: var(--card-bg);
+  color: var(--accent-orange);
+}
+
+.menu-item .menu-icon {
+  font-size: 1.3rem;
+}
+
+.sidebar-footer {
+  padding: 1.5rem;
+  border-top: 1px solid var(--border);
+  margin-top: 1rem;
+}
+
+.sidebar-footer .logout {
+  color: #ff4d4f; /* A distinct color for logout */
+}
+
+.sidebar-footer .logout:hover {
+  background-color: rgba(255, 77, 79, 0.1);
+  color: #ff4d4f;
+}
+
+.mobile-menu-toggle {
+  display: none; /* Hidden by default */
+  position: fixed;
+  top: 1.5rem;
+  left: 1.5rem;
+  background: var(--accent-orange);
+  color: var(--text-light);
+  border: none;
+  border-radius: 8px;
+  padding: 0.8rem;
+  font-size: 1.5rem;
+  cursor: pointer;
+  z-index: 1001;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+
+/* Main Content Area */
+.main-content {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  margin-left: var(--sidebar-width); /* Push content beside sidebar */
+}
+
+.page-container {
+  flex-grow: 1;
+  padding: var(--content-padding);
+}
+
+.page-content {
+  max-width: 1200px; /* Max width for content for readability */
+  margin: 0 auto;
+}
+
+/* Footer Styles */
+footer {
+  background: var(--surface);
+  color: var(--text-gray);
+  padding: 3rem 0;
+  border-top: 1px solid var(--border);
+  margin-top: 3rem; /* Space above footer */
+}
+
+.footer-content {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.footer-section h3 {
+  color: var(--text-light);
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+}
+
+.footer-section p {
+  font-size: 0.95rem;
+  line-height: 1.8;
+}
+
+.footer-links {
+  list-style: none;
+}
+
+.footer-links li {
+  margin-bottom: 0.8rem;
+}
+
+.footer-links a,
+.footer-links li {
+  color: var(--text-gray);
+  text-decoration: none;
+  font-size: 0.95rem;
+  transition: color 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+
+.footer-links a:hover {
+  color: var(--accent-orange);
+}
+
+.social-links {
+  margin-top: 1rem;
+}
+
+.social-links a {
+  color: var(--text-gray);
+  font-size: 1.5rem;
+  margin-right: 1rem;
+  transition: color 0.3s ease;
+}
+
+.social-links a:hover {
+  color: var(--accent-orange);
+}
+
+.copyright {
+  text-align: center;
+  margin-top: 2.5rem;
+  font-size: 0.85rem;
+  color: var(--text-gray);
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+  margin: 2.5rem auto 0;
+  max-width: 1200px;
+  padding-left: 2rem;
+  padding-right: 2rem;
+}
+
+
+/* General Button Styles */
+.btn {
+  display: inline-block;
+  padding: 0.8rem 1.5rem;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center;
+  border: none;
+}
+
+.btn-primary {
+  background-color: var(--accent-orange);
+  color: var(--text-light);
+}
+
+.btn-primary:hover {
+  background-color: var(--accent-orange-light);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(233, 79, 62, 0.3);
+}
+
+.btn-secondary {
+  background-color: var(--surface);
+  color: var(--text-gray);
+  border: 1px solid var(--border);
+}
+
+.btn-secondary:hover {
+  background-color: var(--card-bg);
+  color: var(--text-light);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.btn-outline {
+  background-color: transparent;
+  color: var(--accent-orange);
+  border: 2px solid var(--accent-orange);
+}
+
+.btn-outline:hover {
+  background-color: var(--accent-orange);
+  color: var(--text-light);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(233, 79, 62, 0.3);
+}
+
+
+/* Hero Section Styles */
+.hero {
+  background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://source.unsplash.com/random/1600x900/?luxury-car-interior') no-repeat center center/cover;
+  height: 80vh;
+  min-height: 500px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  color: var(--text-light);
+  padding: 0 2rem;
+  border-radius: 15px;
+  margin-bottom: 3rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5); /* Dark overlay */
+  z-index: 0;
+}
+
+.hero h2 {
+  font-size: 3.5rem;
+  margin-bottom: 1rem;
+  font-weight: 700;
+  line-height: 1.2;
+  z-index: 1;
+}
+
+.hero p {
+  font-size: 1.2rem;
+  margin-bottom: 2rem;
+  max-width: 700px;
+  z-index: 1;
+}
+
+.hero .btn {
+  z-index: 1;
+}
+
+
+/* Section Title Styles */
+.section-title {
+  text-align: center;
+  margin-bottom: 3rem;
+  position: relative;
+  padding-bottom: 1rem;
+}
+
+.section-title h2 {
+  font-size: 2.8rem;
+  color: var(--text-light);
+  font-weight: 700;
+  position: relative;
+  display: inline-block;
+  padding-bottom: 0.5rem;
+}
+
+.section-title h2::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 4px;
+  background-color: var(--accent-orange);
+  border-radius: 2px;
+}
+
+
+/* Car Card Styles */
+.car-card {
+  background: var(--card-bg);
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+}
+
+.car-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+}
+
+.car-card .image-container {
+  position: relative;
+  height: 220px;
+  overflow: hidden;
+}
+
+.car-card .car-image {
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  transition: transform 0.5s ease;
+}
+
+.car-card:hover .car-image {
+  transform: scale(1.05);
+}
+
+.car-card .image-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0) 50%);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 1rem;
+  color: var(--text-light);
+}
+
+.car-card .featured-badge {
+  background-color: var(--accent-gold);
+  color: var(--dark-bg);
+  padding: 0.3rem 0.8rem;
+  border-radius: 5px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  align-self: flex-start;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.car-card .price-badge {
+  background-color: var(--accent-orange);
+  color: var(--text-light);
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-size: 1.3rem;
+  font-weight: 700;
+  align-self: flex-end;
+}
+
+.car-card .car-info {
+  padding: 1.5rem;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.car-card .car-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.car-card .car-make-model {
+  display: flex;
+  flex-direction: column;
+}
+
+.car-card .car-make {
+  font-size: 0.9rem;
+  color: var(--text-gray);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.car-card .car-model {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--text-light);
+  line-height: 1.2;
+}
+
+.car-card .car-year {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--accent-orange);
+}
+
+.car-card .car-features-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.8rem;
+  margin-bottom: 1.2rem;
+}
+
+.car-card .car-feature {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  color: var(--text-gray);
+}
+
+.car-card .car-feature i {
+  color: var(--accent-gold);
+}
+
+.car-card .car-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.85rem;
+  color: var(--text-gray);
+  margin-bottom: 1rem;
+  border-top: 1px dashed var(--border);
+  padding-top: 1rem;
+}
+
+.car-card .car-meta i {
+  margin-right: 0.4rem;
+}
+
+.car-card .car-description {
+  font-size: 0.9rem;
+  color: var(--text-gray);
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+  flex-grow: 1; /* Allow description to take available space */
+}
+
+.car-card .btn {
+  width: 100%;
+  padding: 0.7rem 1.5rem;
+  font-size: 1rem;
+}
+
+/* Home Page & Inventory Page Grids */
+.featured-grid,
+.cars-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  padding: 0 2rem;
+}
+
+.featured-section {
+  padding: 0 0 3rem; /* Adjusted padding to extend grid to edges */
+}
+
+/* Admin Dashboard Specific Styles */
+.admin-dashboard {
+  display: flex;
+  min-height: 100vh; /* Ensure it takes full height */
+}
+
+.admin-sidebar {
+  width: var(--sidebar-width);
+  background: #000000; /* Explicitly black background */
+  color: var(--text-light);
+  padding: 2rem;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  position: sticky;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  z-index: 1000;
+}
+
+.admin-sidebar-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.admin-sidebar-header h2 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: var(--accent-orange); /* Orange writing for header */
+}
+
+.admin-sidebar-header p {
+  font-size: 0.9rem;
+  color: var(--text-gray); /* Keep tagline gray */
+}
+
+.admin-sidebar .sidebar-menu {
+  flex-grow: 1;
+}
+
+.admin-sidebar .menu-item {
+  color: var(--accent-orange); /* Orange writing for menu items */
+}
+
+.admin-sidebar .menu-item:hover,
+.admin-sidebar .menu-item.active {
+  background-color: rgba(233, 79, 62, 0.1); /* Subtle orange background on hover/active */
+  color: var(--accent-orange); /* Ensure orange text stays */
+  border-left: 4px solid var(--accent-orange); /* Orange accent border */
+  padding-left: calc(1.2rem - 4px); /* Adjust padding due to border */
+}
+
+.admin-main {
+  flex-grow: 1;
+  background: var(--dark-bg);
+  padding: var(--content-padding); /* Use existing content padding */
+  overflow-y: auto;
+  /* Background image for the "empty" section */
+  background-image: url('https://source.unsplash.com/random/1200x800/?car-dashboard,futuristic'); /* Placeholder car image */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  position: relative; /* Needed for overlay */
+}
+
+/* Optional: Add a subtle overlay to the background image for better text readability */
+.admin-main::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6); /* Dark overlay */
+  z-index: 0; /* Ensure it's behind content */
+}
+
+/* Ensure content is above the overlay */
+.admin-main > * {
+  position: relative;
+  z-index: 1;
+}
+
+
+.admin-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
+}
+
+.stat-card {
+  background: var(--card-bg); /* Match contact form style */
+  border-radius: 15px; /* More rounded */
+  padding: 1.5rem;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3); /* Enhanced shadow */
+  border: 1px solid var(--border);
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  text-align: center;
+  position: relative;
+  overflow: hidden; /* For the twist */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.App-link {
-  color: #61dafb;
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: -20px;
+  left: -20px;
+  right: -20px;
+  bottom: -20px;
+  background: radial-gradient(circle at center,
+    rgba(233, 79, 62, 0.05) 0%, /* Subtle orange tint */
+    transparent 60%
+  );
+  pointer-events: none;
+  z-index: 0;
+  transition: all 0.5s ease;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+.stat-card:hover::before {
+  transform: scale(1.05);
+  opacity: 0.8;
+}
+
+.stat-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+}
+
+.stat-card .icon {
+  font-size: 2.5rem;
+  color: var(--accent-orange); /* Orange twist */
+  margin-bottom: 0.8rem;
+  z-index: 1; /* Ensure icon is above gradient */
+}
+
+.stat-card .value {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: var(--text-light);
+  margin-bottom: 0.3rem;
+  z-index: 1;
+}
+
+.stat-card .label {
+  font-size: 0.9rem;
+  color: var(--text-gray);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  z-index: 1;
+}
+
+.admin-table-container {
+  background: var(--card-bg); /* Match contact form style */
+  border-radius: 15px; /* More rounded */
+  overflow-x: auto; /* Enable horizontal scrolling for tables */
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3); /* Enhanced shadow */
+  border: 1px solid var(--border);
+  margin-bottom: 2.5rem; /* Space below table */
+  position: relative;
+  overflow: hidden; /* For the twist */
+  z-index: 0;
+}
+
+.admin-table-container::before {
+  content: '';
+  position: absolute;
+  top: -20px;
+  left: -20px;
+  right: -20px;
+  bottom: -20px;
+  background: radial-gradient(circle at top left,
+    rgba(255, 179, 71, 0.03) 0%, /* Subtle gold accent for table */
+    transparent 60%
+  );
+  pointer-events: none;
+  z-index: 0;
+  transition: all 0.5s ease;
+}
+
+.admin-table-container:hover::before {
+  transform: scale(1.02);
+  opacity: 0.8;
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.admin-table th,
+.admin-table td {
+  padding: 1.2rem 1.5rem; /* More padding */
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-gray);
+  font-size: 0.95rem;
+}
+
+.admin-table th {
+  background: var(--surface); /* Darker background for header */
+  color: var(--text-light);
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.admin-table tbody tr:hover {
+  background: rgba(255, 255, 255, 0.03); /* Subtle hover effect */
+}
+
+.admin-table .car-image-thumb {
+  width: 80px; /* Larger thumbnail */
+  height: 50px;
+  object-fit: cover;
+  border-radius: 8px; /* More rounded corners */
+  vertical-align: middle;
+  border: 1px solid var(--border);
+}
+
+.admin-table .actions {
+  display: flex;
+  gap: 0.8rem; /* More space between buttons */
+}
+
+.admin-table .action-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2rem; /* Larger icons */
+  transition: color 0.3s ease, transform 0.2s ease;
+  padding: 0.4rem; /* Add padding for click area */
+  border-radius: 5px;
+}
+
+.admin-table .action-btn:hover {
+  transform: translateY(-2px);
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.admin-table .action-btn.edit {
+  color: var(--accent-orange); /* Orange twist for edit */
+}
+
+.admin-table .action-btn.edit:hover {
+  color: var(--accent-orange-light);
+}
+
+.admin-table .action-btn.delete {
+  color: #ff4d4f; /* Red for delete */
+}
+
+.admin-table .action-btn.delete:hover {
+  color: #ff7875;
+}
+
+
+/* Admin Form Styles (Used for CarForm) */
+.admin-form {
+  background: var(--card-bg); /* Match contact form style */
+  border-radius: 15px; /* More rounded */
+  padding: 2.5rem; /* Match contact form padding */
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4); /* Match contact form shadow */
+  border: 1px solid var(--border);
+  max-width: 800px; /* Limit form width */
+  margin: 3rem auto; /* Center and add space */
+  position: relative;
+  overflow: hidden; /* For the twist */
+}
+
+.admin-form::before {
+  content: '';
+  position: absolute;
+  top: -50px;
+  left: -50px;
+  right: -50px;
+  bottom: -50px;
+  background: radial-gradient(circle at center,
+    rgba(255, 179, 71, 0.05) 0%, /* Subtle gold accent */
+    transparent 60%
+  );
+  pointer-events: none;
+  z-index: 0;
+  transition: all 0.5s ease;
+}
+
+.admin-form:hover::before {
+  transform: scale(1.05);
+  opacity: 0.8;
+}
+
+.admin-form h4 {
+  font-size: 1.8rem;
+  color: var(--text-light);
+  margin-bottom: 1.8rem;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+
+.admin-form h4::after {
+  content: '';
+  position: absolute;
+  width: 70px;
+  height: 3px;
+  background: var(--accent-orange);
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-radius: 2px;
+}
+
+.admin-form .form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+  position: relative;
+  z-index: 1;
+}
+
+.admin-form .form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.admin-form label {
+  color: var(--text-gray);
+  font-size: 0.95rem;
+  margin-bottom: 0.6rem;
+  font-weight: 500;
+}
+
+.admin-form input,
+.admin-form select,
+.admin-form textarea {
+  background: var(--dark-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.9rem 1.2rem;
+  color: var(--text-light);
+  font-size: 1rem;
+  width: 100%;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.admin-form input:focus,
+.admin-form select:focus,
+.admin-form textarea:focus {
+  border-color: var(--accent-orange);
+  box-shadow: 0 0 0 3px rgba(233, 79, 62, 0.2);
+  outline: none;
+}
+
+.admin-form textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.admin-form .btn {
+  width: auto; /* Revert to auto width for buttons within the form */
+  padding: 1rem 2rem; /* Adjusted padding */
+  font-size: 1.1rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border-radius: 10px;
+}
+
+/* Ensure form buttons are in a flex container */
+.admin-form .button-group {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-start; /* Align buttons to the start */
+    margin-top: 1.5rem;
+    position: relative;
+    z-index: 1;
+}
+
+
+/* Car Detail Page Specific Styles */
+.car-detail-page {
+  padding: 2rem 0;
+}
+
+/* Enhancements for CarDetail Component */
+.car-detail {
+  background: var(--card-bg); /* Use card background for the detail container */
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  border: 1px solid var(--border);
+  display: flex; /* Use flexbox for layout of image and info */
+  flex-direction: column; /* Stack image and info vertically on small screens */
+  margin-bottom: 3rem; /* Space before the contact form */
+}
+
+.car-detail .detail-image {
+  width: 100%;
+  height: 450px; /* Base height for the image section */
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  overflow: hidden;
+  /* Make the line separating sections invisible */
+  border-bottom: none; /* Remove border for vertical layout */
+  transition: transform 0.5s ease;
+}
+
+/* Dark gradient that disappears on hover */
+.car-detail .detail-image::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%; /* Cover the entire image */
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, 0.7) 100%);
+  /* Dark gradient from top and bottom, fading in the middle */
+  transition: opacity 0.4s ease; /* Smooth transition for hover effect */
+  opacity: 1; /* Initially visible */
+  pointer-events: none;
+}
+
+.car-detail .detail-image:hover::after {
+  opacity: 0; /* Gradient disappears on hover */
+}
+
+
+.car-detail .detail-info {
+  padding: 2.5rem; /* Ample padding inside the info section */
+  position: relative;
+  z-index: 1; /* Ensure text is above any potential background effects */
+  padding-top: 2.5rem; /* Revert padding, as gradient is now full height */
+  margin-top: 0; /* Revert margin */
+}
+
+.car-detail .detail-make {
+  font-size: 1.1rem;
+  color: var(--text-gray);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+
+.car-detail .detail-model {
+  font-size: 3rem; /* Larger model name */
+  font-weight: 700;
+  color: var(--text-light);
+  margin-bottom: 0.8rem;
+  line-height: 1.1;
+}
+
+.car-detail .detail-price {
+  font-size: 2.5rem; /* Prominent price */
+  font-weight: 800;
+  color: var(--accent-orange);
+  margin-bottom: 1.8rem; /* More space below price */
+}
+
+.car-detail .detail-description {
+  font-size: 1.05rem;
+  color: var(--text-gray);
+  line-height: 1.7;
+  margin-bottom: 2.5rem; /* Space before specs */
+  max-width: 800px; /* Limit description width for readability */
+}
+
+.car-detail .specs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Flexible grid for specs */
+  gap: 1rem; /* Space between specs */
+  margin-bottom: 2rem;
+}
+
+.car-detail .spec {
+  background: var(--dark-bg); /* Darker background for each spec */
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1rem 1.2rem;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--text-light);
+  font-size: 1rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.car-detail .spec:hover {
+  border-color: var(--accent-orange);
+  box-shadow: 0 0 15px rgba(233, 79, 62, 0.15);
+  transform: translateY(-2px);
+}
+
+.car-detail .spec i {
+  color: var(--accent-gold); /* Gold icons for specs */
+  font-size: 1.2rem;
+}
+
+
+/* Contact Form Styles */
+.contact-form {
+  background: var(--card-bg); /* Use card background for consistency */
+  border-radius: 15px;
+  padding: 2.5rem; /* Slightly more padding for a premium feel */
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4); /* Enhanced shadow */
+  border: 1px solid var(--border);
+  margin-top: 3rem; /* Space from car details */
+  position: relative;
+  overflow: hidden; /* For the twist */
+}
+
+/* The "twist": a subtle radial gradient behind the form */
+.contact-form::before {
+  content: '';
+  position: absolute;
+  top: -50px;
+  left: -50px;
+  right: -50px;
+  bottom: -50px;
+  background: radial-gradient(circle at center,
+    rgba(255, 179, 71, 0.05) 0%, /* Light gold accent, very subtle */
+    transparent 60%
+  );
+  pointer-events: none;
+  z-index: 0;
+  transition: all 0.5s ease;
+}
+
+.contact-form:hover::before {
+  transform: scale(1.05); /* Subtle growth on hover */
+  opacity: 0.8;
+}
+
+.contact-form h4 {
+  font-size: 1.8rem; /* Prominent title */
+  color: var(--text-light);
+  margin-bottom: 1.8rem; /* More space below title */
+  text-align: center;
+  position: relative;
+  z-index: 1; /* Ensure title is above the gradient */
+}
+
+.contact-form h4::after {
+  content: '';
+  position: absolute;
+  width: 70px;
+  height: 3px;
+  background: var(--accent-orange);
+  bottom: -8px; /* Position underline below title */
+  left: 50%;
+  transform: translateX(-50%);
+  border-radius: 2px;
+}
+
+.contact-form .form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Flexible columns */
+  gap: 1.5rem; /* Increased gap for better spacing */
+  margin-bottom: 1.5rem;
+  position: relative;
+  z-index: 1;
+}
+
+.contact-form .form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.contact-form label {
+  color: var(--text-gray);
+  font-size: 0.95rem;
+  margin-bottom: 0.6rem; /* Space between label and input */
+  font-weight: 500;
+}
+
+.contact-form input,
+.contact-form textarea {
+  background: var(--dark-bg); /* Darker input background */
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.9rem 1.2rem; /* Comfortable padding */
+  color: var(--text-light);
+  font-size: 1rem;
+  width: 100%;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.contact-form input:focus,
+.contact-form textarea:focus {
+  border-color: var(--accent-orange);
+  box-shadow: 0 0 0 3px rgba(233, 79, 62, 0.2); /* Subtle focus glow */
+  outline: none;
+}
+
+.contact-form textarea {
+  min-height: 120px; /* Ample space for messages */
+  resize: vertical; /* Allow vertical resizing */
+}
+
+.contact-form .btn {
+  width: 100%; /* Full width button */
+  padding: 1rem 0; /* Taller button */
+  margin-top: 1.5rem; /* Space above button */
+  font-size: 1.1rem; /* Larger font size for button */
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border-radius: 10px; /* Slightly more square button */
+}
+
+
+/* Responsive Adjustments */
+@media (max-width: 1200px) {
+  .featured-grid,
+  .cars-grid {
+    padding: 0 1rem;
   }
-  to {
-    transform: rotate(360deg);
+}
+
+@media (max-width: 992px) {
+  .hero {
+    height: 60vh;
+  }
+  
+  .hero h2 {
+    font-size: 2.5rem;
+  }
+  
+  :root {
+    --content-padding: 2rem 1rem 2rem 0.5rem; /* Further reduced padding */
+  }
+
+  .mobile-menu-toggle {
+    display: flex; /* Show button for mobile */
+  }
+  
+  .sidebar {
+    position: fixed;
+    left: -100%; /* Hide sidebar off-screen */
+    height: 100vh;
+    transition: left 0.3s ease;
+  }
+  
+  .sidebar.open {
+    left: 0; /* Slide in sidebar */
+  }
+  
+  .main-content {
+    margin-left: 0; /* No margin when sidebar is hidden */
+  }
+
+  /* Responsive adjustments for CarDetail */
+  .car-detail {
+    flex-direction: column; /* Stack image and info vertically on smaller screens */
+  }
+
+  .car-detail .detail-image {
+    height: 350px; /* Adjust height for tablets */
+    border-right: none; /* Ensure no right border when stacked */
+    border-bottom: none; /* Ensure no bottom border when stacked */
+  }
+
+  /* Adjust gradient for vertical layout when stacked */
+  .car-detail .detail-image::after {
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, 0.7) 100%);
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    right: auto;
+    bottom: auto;
+  }
+
+  .car-detail .detail-info {
+    padding: 2rem;
+    padding-left: 2rem;
+    margin-top: 0;
+    margin-left: 0;
+  }
+
+  .car-detail .detail-model {
+    font-size: 2.5rem;
+  }
+
+  .car-detail .detail-price {
+    font-size: 2rem;
+  }
+
+  .car-detail .detail-description {
+    font-size: 0.95rem;
+  }
+  
+  .car-detail .specs-grid {
+    grid-template-columns: 1fr; /* Stack specs vertically on smaller screens */
+  }
+
+  /* Admin Dashboard responsive adjustments */
+  .admin-sidebar {
+    position: fixed;
+    left: -100%;
+    transition: left 0.3s ease;
+  }
+
+  .admin-sidebar.open {
+    left: 0;
+  }
+
+  .admin-main {
+    margin-left: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero {
+    height: 50vh;
+    min-height: 400px;
+  }
+  
+  .hero h2 {
+    font-size: 2.2rem;
+    padding: 0 1rem;
+  }
+  
+  .hero p {
+    font-size: 1.1rem;
+    padding: 0 1.5rem;
+  }
+  
+  .section-title h2 {
+    font-size: 2rem;
+  }
+  
+  .page-container {
+    padding: 1.5rem 1rem; /* Adjusted padding */
+  }
+
+  .footer-content {
+    grid-template-columns: 1fr;
+    padding: 0 1.5rem;
+  }
+
+  .footer-section {
+    margin-bottom: 1.5rem;
+  }
+
+  .car-card .price-badge {
+    font-size: 1.1rem;
+    padding: 0.4rem 0.8rem;
+  }
+
+  .car-card .car-model {
+    font-size: 1.4rem;
+  }
+
+  .admin-stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Responsive Adjustments for Contact Form */
+  .contact-form {
+    padding: 2rem;
+  }
+  
+  .contact-form h4 {
+    font-size: 1.6rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .contact-form .form-grid {
+    grid-template-columns: 1fr; /* Stack columns on small screens */
+    gap: 1.2rem;
+  }
+
+  /* Car Detail page specific adjustments */
+  .car-detail .detail-image {
+    height: 350px; /* Adjust height for tablets */
+  }
+
+  .car-detail .detail-info {
+    padding: 1.5rem;
+  }
+
+  .car-detail .detail-model {
+    font-size: 2.5rem;
+  }
+
+  .car-detail .detail-price {
+    font-size: 2rem;
+  }
+
+  .car-detail .detail-description {
+    font-size: 0.95rem;
+  }
+  
+  .car-detail .specs-grid {
+    grid-template-columns: 1fr; /* Stack specs vertically on smaller screens */
+  }
+
+  /* Admin Dashboard responsive adjustments */
+  .admin-sidebar {
+    width: 250px; /* Slightly smaller sidebar for smaller screens */
+  }
+
+  .admin-main {
+    padding: 1.5rem;
+  }
+
+  .admin-table th,
+  .admin-table td {
+    padding: 1rem 1rem;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .hero {
+    height: 40vh;
+    min-height: 300px;
+  }
+  
+  .hero h2 {
+    font-size: 1.8rem;
+  }
+  
+  .hero p {
+    font-size: 0.95rem;
+  }
+
+  .section-title h2 {
+    font-size: 1.6rem;
+  }
+
+  .car-card .image-container {
+    height: 180px;
+  }
+
+  .car-card .car-model {
+    font-size: 1.2rem;
+  }
+
+  /* Contact Form adjustments */
+  .contact-form {
+    padding: 1.5rem;
+    margin-top: 2rem;
+  }
+  
+  .contact-form h4 {
+    font-size: 1.4rem;
+    margin-bottom: 1.2rem;
+  }
+  
+  .contact-form input,
+  .contact-form textarea {
+    padding: 0.8rem 1rem;
+    font-size: 0.95rem;
+  }
+  
+  .contact-form .btn {
+    font-size: 1rem;
+    padding: 0.9rem 0;
+  }
+
+  /* Car Detail page specific adjustments */
+  .car-detail {
+    border-radius: 10px;
+    margin-bottom: 2rem;
+  }
+
+  .car-detail .detail-image {
+    height: 250px;
+  }
+
+  .car-detail .detail-info {
+    padding: 1.2rem;
+  }
+
+  .car-detail .detail-make {
+    font-size: 0.9rem;
+  }
+
+  .car-detail .detail-model {
+    font-size: 2rem;
+  }
+
+  .car-detail .detail-price {
+    font-size: 1.8rem;
+  }
+
+  .car-detail .spec {
+    font-size: 0.9rem;
+    padding: 0.8rem 1rem;
+  }
+
+  .car-detail .spec i {
+    font-size: 1.1rem;
+  }
+
+  /* Admin Dashboard responsive adjustments */
+  .admin-sidebar {
+    width: 100%; /* Full width on very small screens */
+    height: auto;
+    position: relative; /* No longer fixed */
+  }
+
+  .admin-main {
+    padding: 1rem;
+  }
+
+  .admin-table .car-image-thumb {
+    width: 60px;
+    height: 40px;
   }
 }

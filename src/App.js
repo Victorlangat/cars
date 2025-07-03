@@ -1,24 +1,34 @@
-import logo from './logo.svg';
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Sidebar from './components/layout/Sidebar';
+import Footer from './components/layout/Footer';
+import HomePage from './components/pages/HomePage';
+import InventoryPage from './components/pages/InventoryPage';
+import CarDetailPage from './components/pages/CarDetailPage';
+import AdminDashboard from './components/pages/AdminDashboard';
 import './App.css';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <div className="app-container">
+        <Sidebar />
+        
+        <div className="main-content">
+          <div className="page-container">
+            <div className="page-content">
+              <Routes>
+                <Route path="/" element={<HomePage />} />
+                <Route path="/inventory" element={<InventoryPage />} />
+                <Route path="/car/:id" element={<CarDetailPage />} />
+                <Route path="/admin" element={<AdminDashboard />} />
+              </Routes>
+            </div>
+          </div>
+          <Footer />
+        </div>
+      </div>
+    </Router>
   );
 }
 
