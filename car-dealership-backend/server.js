@@ -1,83 +1,111 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const nodemailer = require('nodemailer');
+const { MongoClient } = require('mongodb');
 const app = express();
 
-// Enhanced CORS configuration
+// MongoDB connection
+const uri = process.env.MONGODB_URI || "mongodb://localhost:27017";
+const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+
+// Connect to MongoDB
+async function connectDB() {
+  try {
+    await client.connect();
+    console.log("Connected to MongoDB");
+    return client.db("car_dealership");
+  } catch (err) {
+    console.error("MongoDB connection error:", err);
+    process.exit(1);
+  }
+}
+
+// Initialize
+let db;
+(async () => {
+  db = await connectDB();
+})();
+
+// Middleware
 app.use(cors({
   origin: process.env.FRONTEND_URL || 'http://localhost:3000',
-  methods: ['POST'],
-  allowedHeaders: ['Content-Type']
+  methods: ['GET', 'POST', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
-
 app.use(express.json());
 
-// More robust email transporter configuration
-const createTransporter = () => {
-  return nodemailer.createTransport({
-    service: process.env.EMAIL_SERVICE || 'gmail',
-    host: process.env.EMAIL_HOST,
-    port: process.env.EMAIL_PORT || 587,
-    secure: process.env.EMAIL_SECURE === 'true',
-    auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS,
-    },
-    tls: {
-      rejectUnauthorized: false // Only for development/testing
-    }
-  });
-};
+// API Endpoints
 
-// Enhanced email endpoint with validation
-app.post('/api/send-email', async (req, res) => {
+// Submit inquiry
+// In your server.js, make sure you have this endpoint:
+app.post('/api/inquiries', async (req, res) => {
   try {
-    const { recipient, subject, name, email, phone, message } = req.body;
-
-    // Input validation
-    if (!recipient || !subject || !name || !email || !message) {
-      return res.status(400).json({ error: 'Missing required fields' });
-    }
-
-    const transporter = createTransporter();
-
-    const mailOptions = {
-      from: `"Car Sales Contact" <${process.env.EMAIL_USER}>`,
-      to: recipient,
-      subject: subject,
-      text: `
-        Name: ${name}
-        Email: ${email}
-        Phone: ${phone || 'Not provided'}
-        
-        Message:
-        ${message}
-      `,
-      html: `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-          <h2 style="color: #333;">New Vehicle Inquiry</h2>
-          <div style="background: #f9f9f9; padding: 20px; border-radius: 5px;">
-            <p><strong>Name:</strong> ${name}</p>
-            <p><strong>Email:</strong> <a href="mailto:${email}">${email}</a></p>
-            ${phone ? `<p><strong>Phone:</strong> <a href="tel:${phone}">${phone}</a></p>` : ''}
-            <p><strong>Message:</strong></p>
-            <p style="white-space: pre-line;">${message}</p>
-          </div>
-        </div>
-      `,
+    const inquiry = {
+      ...req.body,
+      status: 'new',
+      createdAt: new Date(),
+      updatedAt: new Date()
     };
 
-    await transporter.sendMail(mailOptions);
-    res.status(200).json({ message: 'Email sent successfully' });
-    
-  } catch (error) {
-    console.error('Error sending email:', error);
-    res.status(500).json({ 
-      error: 'Failed to send email',
-      details: error.message 
+    const result = await db.collection('inquiries').insertOne(inquiry);
+    res.status(201).json({
+      success: true,
+      inquiryId: result.insertedId
     });
+  } catch (err) {
+    console.error("Error saving inquiry:", err);
+    res.status(500).json({ success: false, error: "Failed to save inquiry" });
   }
+});
+
+// Get all inquiries
+app.get('/api/inquiries', async (req, res) => {
+  try {
+    const inquiries = await db.collection('inquiries')
+      .find()
+      .sort({ createdAt: -1 })
+      .toArray();
+    res.json(inquiries);
+  } catch (err) {
+    console.error("Error fetching inquiries:", err);
+    res.status(500).json({ error: "Failed to fetch inquiries" });
+  }
+});
+
+// Add this to your server.js
+app.delete('/api/inquiries/:id', async (req, res) => {
+  try {
+    const result = await db.collection('inquiries').deleteOne(
+      { _id: new ObjectId(req.params.id) }
+    );
+    res.json({ success: result.deletedCount > 0 });
+  } catch (err) {
+    console.error("Error deleting inquiry:", err);
+    res.status(500).json({ error: "Failed to delete inquiry" });
+  }
+});
+
+// Update inquiry status
+app.put('/api/inquiries/:id/status', async (req, res) => {
+  try {
+    const result = await db.collection('inquiries').updateOne(
+      { _id: new ObjectId(req.params.id) },
+      { $set: { status: req.body.status, updatedAt: new Date() } }
+    );
+    res.json({ success: result.modifiedCount > 0 });
+  } catch (err) {
+    console.error("Error updating inquiry:", err);
+    res.status(500).json({ error: "Failed to update inquiry" });
+  }
+});
+
+// Health check
+app.get('/api/health', (req, res) => {
+  res.json({ 
+    status: 'healthy',
+    dbConnected: !!db,
+    timestamp: new Date().toISOString()
+  });
 });
 
 const PORT = process.env.PORT || 5000;

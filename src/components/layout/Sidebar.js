@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { FaHome, FaCar, FaUserCog, FaCog, FaSignOutAlt, FaTimes, FaBars } from 'react-icons/fa';
+import logoImage from '../layout/linkalogo.png'; // Adjusted import path
 
 const Sidebar = () => {
   const location = useLocation();
@@ -30,7 +31,7 @@ const Sidebar = () => {
         <div className="sidebar-header">
           <div className="logo-container">
             <div className="logo-icon">
-              <FaCar />
+              <img src={logoImage} alt="Linnka Motors Logo" className="logo-image" />
             </div>
             <h2>Linnka Motors</h2>
           </div>

@@ -13,7 +13,7 @@
   --accent-orange-light: #ff6b5b;
   --accent-gold: #ffb347;
   --border: #3a3a3a;
-  --sidebar-width: 280px;
+  --sidebar-width: 180px;
   --content-padding: 2rem 1.5rem 2rem 1rem; /* Reduced left padding */
 }
 
@@ -67,10 +67,16 @@ body {
 }
 
 .logo-icon {
-  font-size: 2rem;
-  color: var(--accent-orange);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
+.logo-image {
+  width: 70px; /* Adjust as needed */
+  height: 70px; /* Adjust as needed */
+  object-fit: contain; /* Ensures the image maintains its aspect ratio */
+}
 .sidebar-header h2 {
   font-size: 1.8rem;
   font-weight: 700;

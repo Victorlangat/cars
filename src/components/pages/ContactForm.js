@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import './ContactForm.css'; // Make sure to create this CSS file
 
 const ContactForm = ({ car }) => {
   const [formData, setFormData] = useState({
@@ -9,6 +10,7 @@ const ContactForm = ({ car }) => {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState(null);
+  const [errorMessage, setErrorMessage] = useState('');
   
   const handleChange = (e) => {
     setFormData({
@@ -19,30 +21,48 @@ const ContactForm = ({ car }) => {
   
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      setSubmitStatus('error');
+      setErrorMessage('Please enter a valid email address');
+      return;
+    }
+  
     setIsSubmitting(true);
     setSubmitStatus(null);
-    
+    setErrorMessage('');
+  
     try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:5000'}/api/send-email`, {
+      const apiUrl = `${process.env.REACT_APP_API_URL || 'http://localhost:5000'}/api/inquiries`;
+      console.log('Submitting to:', apiUrl); // Debug log
+  
+      const response = await fetch(apiUrl, {
         method: 'POST',
-        headers: {
+        headers: { 
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          recipient: process.env.REACT_APP_RECIPIENT_EMAIL || 'victorjameskibet09@gmail.com',
-          subject: `Inquiry about ${car ? `${car.make} ${car.model}` : 'a vehicle'}`,
           name: formData.name,
           email: formData.email,
           phone: formData.phone,
-          message: formData.message
+          message: formData.message,
+          car: car ? { make: car.make, model: car.model } : null
         })
       });
-
+  
+      // First check if response is OK
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to send email');
+        const errorData = await response.text();
+        console.error('Server responded with:', errorData);
+        throw new Error(`Server error: ${response.status} ${response.statusText}`);
       }
-
+  
+      // Then try to parse as JSON
+      const responseData = await response.json();
+      console.log('Submission successful:', responseData);
+  
       setSubmitStatus('success');
       setFormData({
         name: '',
@@ -51,13 +71,22 @@ const ContactForm = ({ car }) => {
         message: `I'm interested in the ${car ? `${car.make} ${car.model}` : 'vehicle'}. Please contact me with more information.`
       });
     } catch (error) {
-      console.error('Error:', error);
+      console.error('Submission failed:', {
+        error: error.message,
+        stack: error.stack
+      });
       setSubmitStatus('error');
+      setErrorMessage(
+        error.message.includes('Failed to fetch') 
+          ? 'Network error. Please check your connection.'
+          : error.message.includes('Server error')
+            ? 'The server encountered an error. Please try again later.'
+            : 'Failed to submit your inquiry. Please try again later.'
+      );
     } finally {
       setIsSubmitting(false);
     }
   };
-  
   return (
     <div className="contact-form">
       <h4>Contact Seller</h4>
@@ -68,7 +97,7 @@ const ContactForm = ({ car }) => {
       )}
       {submitStatus === 'error' && (
         <div className="alert alert-danger">
-          There was an error sending your inquiry. Please try again later.
+          {errorMessage || 'There was an error sending your inquiry. Please try again later.'}
         </div>
       )}
       <form onSubmit={handleSubmit}>
@@ -82,6 +111,7 @@ const ContactForm = ({ car }) => {
               value={formData.name}
               onChange={handleChange}
               required 
+              placeholder="Enter your full name"
             />
           </div>
           <div className="form-group">
@@ -92,7 +122,8 @@ const ContactForm = ({ car }) => {
               name="email"
               value={formData.email}
               onChange={handleChange}
-              required 
+              required
+              placeholder="Enter your email address"
             />
           </div>
           <div className="form-group">
@@ -103,6 +134,7 @@ const ContactForm = ({ car }) => {
               name="phone"
               value={formData.phone}
               onChange={handleChange}
+              placeholder="Enter your phone number"
             />
           </div>
           <div className="form-group">
@@ -114,6 +146,7 @@ const ContactForm = ({ car }) => {
               onChange={handleChange}
               required
               rows="5"
+              placeholder="Enter your message"
             ></textarea>
           </div>
         </div>
