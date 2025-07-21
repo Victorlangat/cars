@@ -1,7 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const { MongoClient } = require('mongodb');
+const { MongoClient, ObjectId } = require('mongodb'); // Added ObjectId import
 const app = express();
 
 // MongoDB connection
@@ -29,7 +29,7 @@ let db;
 // Middleware
 app.use(cors({
   origin: process.env.FRONTEND_URL || 'http://localhost:3000',
-  methods: ['GET', 'POST', 'OPTIONS'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Added DELETE method
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 app.use(express.json());
@@ -37,7 +37,6 @@ app.use(express.json());
 // API Endpoints
 
 // Submit inquiry
-// In your server.js, make sure you have this endpoint:
 app.post('/api/inquiries', async (req, res) => {
   try {
     const inquiry = {
@@ -72,13 +71,23 @@ app.get('/api/inquiries', async (req, res) => {
   }
 });
 
-// Add this to your server.js
+// Delete inquiry
 app.delete('/api/inquiries/:id', async (req, res) => {
   try {
+    // Validate the ID format first
+    if (!ObjectId.isValid(req.params.id)) {
+      return res.status(400).json({ error: "Invalid inquiry ID format" });
+    }
+
     const result = await db.collection('inquiries').deleteOne(
       { _id: new ObjectId(req.params.id) }
     );
-    res.json({ success: result.deletedCount > 0 });
+
+    if (result.deletedCount === 0) {
+      return res.status(404).json({ error: "Inquiry not found" });
+    }
+
+    res.json({ success: true });
   } catch (err) {
     console.error("Error deleting inquiry:", err);
     res.status(500).json({ error: "Failed to delete inquiry" });
@@ -88,10 +97,20 @@ app.delete('/api/inquiries/:id', async (req, res) => {
 // Update inquiry status
 app.put('/api/inquiries/:id/status', async (req, res) => {
   try {
+    // Validate the ID format first
+    if (!ObjectId.isValid(req.params.id)) {
+      return res.status(400).json({ error: "Invalid inquiry ID format" });
+    }
+
     const result = await db.collection('inquiries').updateOne(
       { _id: new ObjectId(req.params.id) },
       { $set: { status: req.body.status, updatedAt: new Date() } }
     );
+
+    if (result.matchedCount === 0) {
+      return res.status(404).json({ error: "Inquiry not found" });
+    }
+
     res.json({ success: result.modifiedCount > 0 });
   } catch (err) {
     console.error("Error updating inquiry:", err);

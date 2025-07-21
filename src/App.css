@@ -306,7 +306,9 @@ footer {
 
 /* Hero Section Styles */
 .hero {
-  background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://source.unsplash.com/random/1600x900/?luxury-car-interior') no-repeat center center/cover;
+  background: 
+    linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)),
+    url('https://cdn.motor1.com/images/mgl/G6yrq/s1/2021-jeep-grand-wagoneer-screens.jpg') no-repeat center center/cover;
   height: 80vh;
   min-height: 500px;
   display: flex;
@@ -320,6 +322,13 @@ footer {
   margin-bottom: 3rem;
   position: relative;
   overflow: hidden;
+  animation: fadeIn 1s ease-in;
+}
+
+/* Optional: Add a subtle animation for the background */
+@keyframes fadeIn {
+  from { opacity: 0.8; }
+  to { opacity: 1; }
 }
 
 .hero::after {
