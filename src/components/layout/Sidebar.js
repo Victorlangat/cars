@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { FaHome, FaCar, FaUserCog, FaCog, FaSignOutAlt, FaTimes, FaBars } from 'react-icons/fa';
-import logoImage from '../layout/linkalogo.png'; // Adjusted import path
+import { FaHome, FaCar, FaUserCog, FaInfoCircle, FaCog, FaSignOutAlt, FaTimes, FaBars } from 'react-icons/fa';
+import logoImage from '../layout/linkalogo.png';
 
 const Sidebar = () => {
   const location = useLocation();
@@ -14,7 +14,8 @@ const Sidebar = () => {
   const navItems = [
     { path: "/", label: "Home", icon: <FaHome /> },
     { path: "/inventory", label: "Browse Cars", icon: <FaCar /> },
-    { path: "/admin", label: "Admin Dashboard", icon: <FaUserCog /> }
+    { path: "/admin", label: "Admin Dashboard", icon: <FaUserCog /> },
+    { path: "/about", label: "About Us", icon: <FaInfoCircle /> }
   ];
   
   return (
@@ -23,6 +24,7 @@ const Sidebar = () => {
       <button 
         className="mobile-menu-toggle"
         onClick={() => setIsMobileOpen(!isMobileOpen)}
+        aria-label="Toggle menu"
       >
         {isMobileOpen ? <FaTimes /> : <FaBars />}
       </button>
@@ -53,14 +55,7 @@ const Sidebar = () => {
         </div>
         
         <div className="sidebar-footer">
-          <Link to="/settings" className="menu-item">
-            <span className="menu-icon"><FaCog /></span>
-            <span className="menu-label">Settings</span>
-          </Link>
-          <button className="menu-item logout">
-            <span className="menu-icon"><FaSignOutAlt /></span>
-            <span className="menu-label">Logout</span>
-          </button>
+          
         </div>
       </div>
     </>

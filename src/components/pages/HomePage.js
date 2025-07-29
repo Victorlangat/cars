@@ -11,7 +11,13 @@ const HomePage = () => {
       <div className="hero">
         <h2>Find Your Dream Car Today</h2>
         <p>Discover the perfect vehicle from our premium collection of luxury and performance cars. Exceptional quality, unbeatable prices.</p>
-        <a href="/inventory" className="btn btn-primary">Browse Inventory</a>
+        <div className='btn-primary'>
+
+            <a href="/inventory" className="btn btn-primary hero-btn">
+                     Browse Inventory
+                  </a>
+
+            </div>
       </div>
 
       <div className="featured-section">

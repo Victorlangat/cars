@@ -6,6 +6,7 @@ import HomePage from './components/pages/HomePage';
 import InventoryPage from './components/pages/InventoryPage';
 import CarDetailPage from './components/pages/CarDetailPage';
 import AdminDashboard from './components/pages/AdminDashboard';
+import AboutPage from './components/pages/AboutPage';
 import './App.css';
 
 function App() {
@@ -22,6 +23,7 @@ function App() {
                 <Route path="/inventory" element={<InventoryPage />} />
                 <Route path="/car/:id" element={<CarDetailPage />} />
                 <Route path="/admin" element={<AdminDashboard />} />
+                <Route path="/about" element={<AboutPage />} />
               </Routes>
             </div>
           </div>

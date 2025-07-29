@@ -1,12 +1,15 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const { MongoClient, ObjectId } = require('mongodb'); // Added ObjectId import
+const { MongoClient, ObjectId } = require('mongodb');
 const app = express();
 
 // MongoDB connection
 const uri = process.env.MONGODB_URI || "mongodb://localhost:27017";
-const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+const client = new MongoClient(uri, { 
+  useNewUrlParser: true, 
+  useUnifiedTopology: true 
+});
 
 // Connect to MongoDB
 async function connectDB() {
@@ -29,14 +32,67 @@ let db;
 // Middleware
 app.use(cors({
   origin: process.env.FRONTEND_URL || 'http://localhost:3000',
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Added DELETE method
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 app.use(express.json());
 
 // API Endpoints
 
-// Submit inquiry
+// Car Endpoints
+app.post('/api/cars', async (req, res) => {
+  try {
+    const car = {
+      ...req.body,
+      images: req.body.images || [req.body.image], // Handle single image or array
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+    const result = await db.collection('cars').insertOne(car);
+    res.status(201).json({ ...car, _id: result.insertedId });
+  } catch (err) {
+    console.error("Error saving car:", err);
+    res.status(500).json({ error: "Failed to save car" });
+  }
+});
+
+app.get('/api/cars', async (req, res) => {
+  try {
+    const cars = await db.collection('cars').find().toArray();
+    res.json(cars);
+  } catch (err) {
+    console.error("Error fetching cars:", err);
+    res.status(500).json({ error: "Failed to fetch cars" });
+  }
+});
+
+app.get('/api/cars/:id', async (req, res) => {
+  try {
+    const car = await db.collection('cars').findOne({ _id: new ObjectId(req.params.id) });
+    if (!car) {
+      return res.status(404).json({ error: "Car not found" });
+    }
+    res.json(car);
+  } catch (err) {
+    console.error("Error fetching car:", err);
+    res.status(500).json({ error: "Failed to fetch car" });
+  }
+});
+
+app.delete('/api/cars/:id', async (req, res) => {
+  try {
+    const result = await db.collection('cars').deleteOne({ _id: new ObjectId(req.params.id) });
+    if (result.deletedCount === 0) {
+      return res.status(404).json({ error: "Car not found" });
+    }
+    res.json({ success: true });
+  } catch (err) {
+    console.error("Error deleting car:", err);
+    res.status(500).json({ error: "Failed to delete car" });
+  }
+});
+
+// Existing inquiries endpoints
 app.post('/api/inquiries', async (req, res) => {
   try {
     const inquiry = {
@@ -45,19 +101,14 @@ app.post('/api/inquiries', async (req, res) => {
       createdAt: new Date(),
       updatedAt: new Date()
     };
-
     const result = await db.collection('inquiries').insertOne(inquiry);
-    res.status(201).json({
-      success: true,
-      inquiryId: result.insertedId
-    });
+    res.status(201).json({ ...inquiry, _id: result.insertedId });
   } catch (err) {
     console.error("Error saving inquiry:", err);
-    res.status(500).json({ success: false, error: "Failed to save inquiry" });
+    res.status(500).json({ error: "Failed to save inquiry" });
   }
 });
 
-// Get all inquiries
 app.get('/api/inquiries', async (req, res) => {
   try {
     const inquiries = await db.collection('inquiries')
@@ -71,50 +122,34 @@ app.get('/api/inquiries', async (req, res) => {
   }
 });
 
-// Delete inquiry
-app.delete('/api/inquiries/:id', async (req, res) => {
-  try {
-    // Validate the ID format first
-    if (!ObjectId.isValid(req.params.id)) {
-      return res.status(400).json({ error: "Invalid inquiry ID format" });
-    }
-
-    const result = await db.collection('inquiries').deleteOne(
-      { _id: new ObjectId(req.params.id) }
-    );
-
-    if (result.deletedCount === 0) {
-      return res.status(404).json({ error: "Inquiry not found" });
-    }
-
-    res.json({ success: true });
-  } catch (err) {
-    console.error("Error deleting inquiry:", err);
-    res.status(500).json({ error: "Failed to delete inquiry" });
-  }
-});
-
-// Update inquiry status
 app.put('/api/inquiries/:id/status', async (req, res) => {
   try {
-    // Validate the ID format first
-    if (!ObjectId.isValid(req.params.id)) {
-      return res.status(400).json({ error: "Invalid inquiry ID format" });
-    }
-
     const result = await db.collection('inquiries').updateOne(
       { _id: new ObjectId(req.params.id) },
       { $set: { status: req.body.status, updatedAt: new Date() } }
     );
-
     if (result.matchedCount === 0) {
       return res.status(404).json({ error: "Inquiry not found" });
     }
-
     res.json({ success: result.modifiedCount > 0 });
   } catch (err) {
     console.error("Error updating inquiry:", err);
     res.status(500).json({ error: "Failed to update inquiry" });
+  }
+});
+
+app.delete('/api/inquiries/:id', async (req, res) => {
+  try {
+    const result = await db.collection('inquiries').deleteOne(
+      { _id: new ObjectId(req.params.id) }
+    );
+    if (result.deletedCount === 0) {
+      return res.status(404).json({ error: "Inquiry not found" });
+    }
+    res.json({ success: true });
+  } catch (err) {
+    console.error("Error deleting inquiry:", err);
+    res.status(500).json({ error: "Failed to delete inquiry" });
   }
 });
 
