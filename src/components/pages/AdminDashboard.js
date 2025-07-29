@@ -6,22 +6,21 @@ import AddCarForm from './AddCarForm';
 import './AdminDashboard.css';
 
 const AdminDashboard = () => {
-  // State management
-  const { cars, addCar, updateCar, deleteCar } = useCarService();
+  const { cars, addCar, updateCar, deleteCar, getCarById } = useCarService(); // Added getCarById
   const [formData, setFormData] = useState({
-    id: '',
+    _id: null, // Changed from 'id' to '_id' for backend consistency
     make: '',
     model: '',
-    year: 2023,
-    price: '',
-    mileage: '',
+    year: '', // Changed to empty string to allow initial data from service
+    price: '', // Changed to empty string
+    mileage: '', // Changed to empty string
     fuel: 'Gasoline',
     transmission: 'Automatic',
     body: 'Sedan',
     color: '',
-    image: '',
+    images: [''], // Changed from 'image' to 'images' for consistency
     description: '',
-    isImported: false
+    features: [] // Added features
   });
   const [editingId, setEditingId] = useState(null);
   const [inquiries, setInquiries] = useState([]);
@@ -30,7 +29,6 @@ const AdminDashboard = () => {
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  // Effects
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 768);
@@ -54,48 +52,40 @@ const AdminDashboard = () => {
     if (activeTab === 'inquiries' || activeTab === 'dashboard') fetchInquiries();
   }, [activeTab]);
 
-  // Handlers
-  const handleEdit = useCallback((car) => {
-    setFormData({
-      id: car.id,
-      make: car.make,
-      model: car.model,
-      year: car.year,
-      price: car.price,
-      mileage: car.mileage,
-      fuel: car.fuel,
-      transmission: car.transmission,
-      body: car.body,
-      color: car.color,
-      image: car.image,
-      description: car.description,
-      isImported: car.isImported || false
-    });
-    setEditingId(car.id);
-    setActiveTab('add-edit');
-    setMobileMenuOpen(false);
-  }, []);
+  const handleEdit = useCallback((carId) => { // Accept carId
+    const carToEdit = getCarById(carId); // Fetch car data using getCarById
+    if (carToEdit) {
+      setFormData({
+        _id: carToEdit._id,
+        make: carToEdit.make,
+        model: carToEdit.model,
+        year: carToEdit.year,
+        price: carToEdit.price,
+        mileage: carToEdit.mileage,
+        fuel: carToEdit.fuel,
+        transmission: carToEdit.transmission,
+        body: carToEdit.body,
+        color: carToEdit.color,
+        images: carToEdit.images || [''], // Ensure images is an array
+        description: carToEdit.description,
+        features: carToEdit.features || []
+      });
+      setEditingId(carId);
+      setActiveTab('add-edit');
+      setMobileMenuOpen(false);
+    }
+  }, [getCarById]); // Dependency on getCarById
 
   const handleCancel = useCallback(() => {
     setFormData({
-      id: '',
-      make: '',
-      model: '',
-      year: 2023,
-      price: '',
-      mileage: '',
-      fuel: 'Gasoline',
-      transmission: 'Automatic',
-      body: 'Sedan',
-      color: '',
-      image: '',
-      description: '',
-      isImported: false
+      _id: null,
+      make: '', model: '', year: '', price: '', mileage: '', fuel: 'Gasoline',
+      body: 'Sedan', color: '', transmission: 'Automatic', description: '',
+      images: [''], features: []
     });
     setEditingId(null);
   }, []);
 
-  // Helper functions
   const updateInquiryStatus = async (id, status) => {
     try {
       await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:5000'}/api/inquiries/${id}/status`, {
@@ -120,7 +110,6 @@ const AdminDashboard = () => {
     }
   };
 
-  // Stats calculation
   const stats = {
     totalCars: cars.length,
     featuredCars: cars.filter(car => car.featured).length,
@@ -128,7 +117,6 @@ const AdminDashboard = () => {
     newInquiries: inquiries.filter(i => i.status === 'new').length
   };
 
-  // Navigation items
   const navItems = [
     { id: 'dashboard', icon: <FaChartBar />, label: 'Dashboard' },
     { id: 'inventory', icon: <FaCar />, label: 'Inventory' },
@@ -136,7 +124,6 @@ const AdminDashboard = () => {
     { id: 'inquiries', icon: <FaEnvelope />, label: 'Inquiries' }
   ];
 
-  // Components
   const DashboardContent = () => (
     <div className="dashboard-content">
       <div className={`stats-grid ${isMobile ? 'mobile' : ''}`}>
@@ -215,7 +202,11 @@ const AdminDashboard = () => {
     <div className="inventory-content">
       <div className="content-header">
         <h2>Vehicle Inventory</h2>
-        <Button onClick={() => { setActiveTab('add-edit'); setMobileMenuOpen(false); }}>
+        <Button onClick={() => { 
+          handleCancel(); // Reset form for new car
+          setActiveTab('add-edit'); 
+          setMobileMenuOpen(false); 
+        }}>
           <FaPlus /> Add New Car
         </Button>
       </div>
@@ -227,16 +218,17 @@ const AdminDashboard = () => {
       ) : (
         <div className={`cars-grid ${isMobile ? 'mobile' : ''}`}>
           {cars.map(car => (
-            <div key={car.id} className="car-card">
-              <div className="car-image" style={{ backgroundImage: `url(${car.image})` }} />
+            <div key={car._id} className="car-card"> {/* Use car._id here */}
+              {/* Ensure car.images[0] is used for display if it's an array */}
+              <div className="car-image" style={{ backgroundImage: `url(${car.images && car.images[0] || ''})` }} />
               <div className="car-info">
                 <h4>{car.make} {car.model}</h4>
                 <p>${car.price.toLocaleString()}</p>
                 <div className="car-actions">
-                  <Button onClick={() => handleEdit(car)}>
+                  <Button onClick={() => handleEdit(car._id)}> {/* Pass car._id to handleEdit */}
                     <FaEdit /> Edit
                   </Button>
-                  <Button onClick={() => window.confirm('Delete this car?') && deleteCar(car.id)}>
+                  <Button onClick={() => window.confirm('Delete this car?') && deleteCar(car._id)}> {/* Pass car._id to deleteCar */}
                     <FaTrash /> Delete
                   </Button>
                 </div>
@@ -259,7 +251,8 @@ const AdminDashboard = () => {
         handleCancel();
         setActiveTab('inventory');
       }}
-      initialData={formData}
+      // Pass the formData with _id for editing
+      initialData={editingId ? getCarById(editingId) : formData}
       isEditing={!!editingId}
     />
   );
